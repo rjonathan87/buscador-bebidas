@@ -1,24 +1,38 @@
 import { useState } from 'react'
-import { Button, Form, Row, Col } from 'react-bootstrap'
+import { Button, Form, Row, Col, Alert } from 'react-bootstrap'
 import useCategorias from '../hooks/useCategorias'
+import useBebidas from '../hooks/useBebidas'
 
 const Formulario = () => {
   const [busqueda, setBusqueda] = useState({
     nombre: '',
     categoria: ''
   })
+  const [alerta, setAlerta] = useState('')
   const { categorias } = useCategorias()
+  const { consultarBebidas } = useBebidas()
 
   const handleSubmit = e => {
     e.preventDefault()
-    
+
+    if(Object.values(busqueda).includes('')){
+      setAlerta('Todos los campos son obligatorios')
+      return 
+    }
+
+    setAlerta('')
+    consultarBebidas(busqueda)
   }
   
   return (
     <>
       <Form
-        onsubmit={handleSubmit}
+        onSubmit={handleSubmit}
+        className="mb-5"
       >
+        { alerta && <Alert 
+          variant='danger' 
+          className='text-center'>{alerta}</Alert>}
         <Row>
           <Col md={6}>
             <Form.Group className='mb-3'>
@@ -74,6 +88,7 @@ const Formulario = () => {
             <Button
               variant='danger'
               className='text-uppercase w-100'
+              type='submit'
             >
               Buscar Bebidas
             </Button>
